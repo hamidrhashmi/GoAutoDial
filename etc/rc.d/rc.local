@@ -1,0 +1,42 @@
+#!/bin/bash
+# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
+#
+# It is highly advisable to create own systemd services or udev rules
+# to run scripts during boot instead of using this file.
+#
+# In contrast to previous versions due to parallel execution during boot
+# this script will NOT be run after all other services.
+#
+# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
+# that this script will be executed during boot.
+
+# Wait 20 seconds
+sleep 20 &&
+
+# run first boot configuration script
+if [ -e /.firstboot ]; then
+	/usr/src/goautodial/rclocal.sh
+fi
+
+# Start Kamailio here
+systemctl start kamailio 2>/dev/null 1>&2
+
+# OPTIONAL enable ip_relay(for same-machine trunking and blind monitoring)
+/usr/share/astguiclient/ip_relay/relay_control start  2>/dev/null 1>&2
+
+### roll the Asterisk logs upon reboot
+/usr/share/astguiclient/ADMIN_restart_roll_logs.pl 2>/dev/null 1>&2
+
+### clear the server-related records from the database
+/usr/share/astguiclient/AST_reset_mysql_vars.pl 2>/dev/null 1>&2
+
+### start up asterisk
+/usr/share/astguiclient/start_asterisk_boot.pl 2>/dev/null 1>&2
+
+### start app_konference listener
+/usr/local/bin/listener.pl
+
+touch /var/lock/subsys/local
+
+exit 0
+

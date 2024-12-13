@@ -1,0 +1,39 @@
+[mysqld]
+#large-pages
+performance_schema                              = ON
+max_connections                                 = 1024
+skip-name-resolve
+skip-host-cache
+
+#slow_query_log                                 = 1
+#log_queries_not_using_indexes
+log-error=/var/log/mariadb/mariadb.log
+
+query_cache_size                                = 64M
+query_cache_limit                               = 16M
+query_cache_min_res_unit                        = 1k
+
+table_open_cache                                = 8192
+table_cache                                     = 4096
+table_definition_cache                          = 2048
+thread_cache_size                               = 256
+read_rnd_buffer_size                            = 16M
+sort_buffer_size                                = 4M
+join_buffer_size                                = 2M
+tmp_table_size                                  = 256M
+max_heap_table                                  = 256M
+
+# MyISAM
+myisam-recover-options
+bulk_insert_buffer_size                         = 2G
+myisam_sort_buffer_size                         = 128M
+concurrent_insert                               = 2
+myisam_repair_threads                           = 1
+key_buffer_size                                 = 4096M
+
+innodb_buffer_pool_size                         = 4G
+innodb_additional_mem_pool_size                 = 16M
+innodb_log_file_size                            = 1024M
+innodb_buffer_pool_instances                    = 12
+innodb_flush_log_at_trx_commit                  = 2
+innodb_thread_concurrency                       = 16
